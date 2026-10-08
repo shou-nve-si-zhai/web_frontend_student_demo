@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-wrap">
+            <h1>寝室桶装水订购系统‑个人中心</h1>
+            <div class="user-box">
+                <button id="userCircleBtn" class="circle-btn">登录</button>
+                <div id="userDropdown" class="dropdown-menu">
+                    <a href="./profile.html">个人中心</a>
+                    <button id="logoutBtn">登出</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav>
+        <div class="container">
+            <a href="./index.html">首页</a>
+            <a href="./create-order.html">订购</a>
+        </div>
+    </nav>
+    <main class="container">
+        <div class="profile-layout">
+            <aside class="profile-sidebar">
+                <h3>个人中心导航</h3>
+                <nav>
+                    <a href="#my-orders">我的订单</a>
+                    <a href="#receive-notify">收到配送通知</a>
+                </nav>
+            </aside>
+
+            <div class="profile-content">
+                <section id="my-orders">
+                    <h2>我的订单</h2>
+                    <div class="order-grid" id="orderGrid">
+                        <p style="color: var(--color-muted);">暂无订单</p>
+                    </div>
+                </section>
+
+                <section id="receive-notify">
+                    <h2>收到配送通知</h2>
+                    <div id="notifyList">
+                        <p style="color: var(--color-muted);">暂无配送通知</p>
+                    </div>
+                </section>
+
+                <div class="logout-section">
+                    <button id="logoutPageBtn" class="btn-logout">退出登录</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<div id="loginModal" class="modal-mask">
+  <div class="modal-box">
+    <div class="modal-tab">
+      <button class="tab-btn active" data-tab="login">登录</button>
+      <button class="tab-btn" data-tab="register">注册</button>
+    </div>
+    <div class="tab-content login-tab active">
+      <div>
+        <label>账号</label>
+        <input type="text" id="loginAccount" placeholder="输入账号">
+      </div>
+      <div>
+        <label>密码</label>
+        <input type="password" id="loginPwd" placeholder="输入密码">
+      </div>
+      <div class="modal-buttons">
+        <button id="loginSubmitBtn">登录</button>
+        <button id="closeModalBtn">关闭</button>
+      </div>
+    </div>
+    <div class="tab-content register-tab">
+      <div>
+        <label>设置账号</label>
+        <input type="text" id="regAccount" placeholder="自定义账号">
+      </div>
+      <div>
+        <label>设置密码</label>
+        <input type="password" id="regPwd" placeholder="自定义密码">
+      </div>
+      <div class="modal-buttons">
+        <button id="regSubmitBtn">注册</button>
+        <button id="closeModalBtn2">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <footer>
+        <p>寝室桶装水订购系统 ©2026</p>
+    </footer>
+
+<script>
+let userData = JSON.parse(localStorage.getItem("userList")) || [];
+let loginState = localStorage.getItem("isLogin");
+const circleBtn = document.getElementById("userCircleBtn");
+const dropdown = document.getElementById("userDropdown");
+const modalMask = document.getElementById("loginModal");
+const tabBtns = document.querySelectorAll(".tab-btn");
+const loginTab = document.querySelector(".login-tab");
+const regTab = document.querySelector(".register-tab");
+
+function initUserState(){
+  circleBtn.innerText = loginState === "true" ? "用户" : "登录";
+}
+initUserState();
+
+// 未登录拦截：隐藏内容并弹出登录框
+const mainEl = document.querySelector("main");
+if(loginState !== "true"){
+  mainEl.style.display = "none";
+  alert("请先登录后再访问个人中心！");
+  modalMask.classList.add("show");
+  tabBtns[0].click();
+}
+
+// 渲染当前账号的订单列表
+function renderOrders(){
+  const currentUser = localStorage.getItem("currentUser");
+  const orderGrid = document.getElementById("orderGrid");
+  if(!currentUser){
+    orderGrid.innerHTML = '<p style="color: var(--color-muted);">暂无订单</p>';
+    return;
+  }
+  const orders = JSON.parse(localStorage.getItem("orders_" + currentUser)) || [];
+  if(orders.length === 0){
+    orderGrid.innerHTML = '<p style="color: var(--color-muted);">暂无订单，去<a href="./create-order.html">下单订水</a>吧～</p>';
+    return;
+  }
+  orderGrid.innerHTML = orders.map(o => `
+    <article class="order-card">
+      <h3>${o.water} × ${o.count}桶</h3>
+      <span class="status ${o.status === '已送达' ? 'done' : 'pending'}">状态：${o.status}</span>
+      <p>总价：<strong style="color: var(--color-price);">¥${o.price}</strong></p>
+      <p>楼栋：${o.building}　寝室：${o.room}</p>
+      <p>下单时间：${o.time}</p>
+    </article>
+  `).join("");
+}
+renderOrders();
+
+// 渲染当前账号的配送通知
+function renderNotify(){
+  const currentUser = localStorage.getItem("currentUser");
+  const notifyList = document.getElementById("notifyList");
+  if(!currentUser){
+    notifyList.innerHTML = '<p style="color: var(--color-muted);">暂无配送通知</p>';
+    return;
+  }
+  const notifies = JSON.parse(localStorage.getItem("notify_" + currentUser)) || [];
+  if(notifies.length === 0){
+    notifyList.innerHTML = '<p style="color: var(--color-muted);">暂无配送通知</p>';
+    return;
+  }
+  notifyList.innerHTML = notifies.map(n => `
+    <div class="notify-item">
+      <p>订单：${n.water}</p>
+      <p>通知时间：${n.time}</p>
+      <p>状态：${n.status}</p>
+      <button style="margin-top: var(--space-3);" onclick="confirmReceive(${n.id})">确认收货</button>
+    </div>
+  `).join("");
+}
+renderNotify();
+
+tabBtns.forEach(btn=>{
+  btn.onclick = ()=>{
+    tabBtns.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    if(tab === "login"){
+      loginTab.classList.add("active");regTab.classList.remove("active");
+    }else{
+      loginTab.classList.remove("active");regTab.classList.add("active");
+    }
+  }
+})
+
+circleBtn.onclick = function(){
+  if(loginState === "true"){
+    dropdown.classList.toggle("show");
+  }else{
+    modalMask.classList.add("show");
+    tabBtns[0].click();
+  }
+}
+// 未登录时关闭弹窗则返回首页
+document.querySelector("#closeModalBtn").onclick = ()=> {
+  if(loginState !== "true"){
+    window.location.href = "./index.html";
+  }else{
+    modalMask.classList.remove("show");
+  }
+};
+document.querySelector("#closeModalBtn2").onclick = ()=> {
+  if(loginState !== "true"){
+    window.location.href = "./index.html";
+  }else{
+    modalMask.classList.remove("show");
+  }
+};
+
+document.querySelector("#regSubmitBtn").onclick = function(){
+  const acc = document.getElementById("regAccount").value.trim();
+  const pwd = document.getElementById("regPwd").value.trim();
+  if(!acc||!pwd){alert("账号密码不能为空");return;}
+  if(userData.find(u=>u.account===acc)){alert("账号已存在！");return;}
+  userData.push({account:acc,password:pwd});
+  localStorage.setItem("userList",JSON.stringify(userData));
+  alert("注册成功！请登录");
+  tabBtns[0].click();
+}
+
+document.querySelector("#loginSubmitBtn").onclick = function(){
+  const acc = document.getElementById("loginAccount").value.trim();
+  const pwd = document.getElementById("loginPwd").value.trim();
+  const user = userData.find(u=>u.account===acc && u.password===pwd);
+  if(user){
+    alert("登录成功！");
+    localStorage.setItem("isLogin","true");
+    localStorage.setItem("currentUser", acc);
+    loginState="true";
+    circleBtn.innerText="用户";
+    modalMask.classList.remove("show");
+    mainEl.style.display = "";
+    renderOrders();
+    renderNotify();
+  }else{
+    alert("账号或密码错误");
+  }
+}
+
+document.getElementById("logoutBtn").onclick = function(){
+  localStorage.removeItem("isLogin");
+  localStorage.removeItem("currentUser");
+  loginState=null;
+  circleBtn.innerText="登录";
+  dropdown.classList.remove("show");
+}
+
+// 页面内退出登录按钮：清除登录状态并跳转首页
+document.getElementById("logoutPageBtn").onclick = function(){
+  if(confirm("确定要退出登录吗？")){
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("currentUser");
+    loginState = null;
+    circleBtn.innerText = "登录";
+    dropdown.classList.remove("show");
+    alert("已退出登录");
+    window.location.href = "./index.html";
+  }
+}
+
+document.addEventListener("click",function(e){
+  if(!circleBtn.contains(e.target) && !dropdown.contains(e.target)){
+    dropdown.classList.remove("show");
+  }
+})
+
+// 确认收货：将该通知状态改为已送达
+function confirmReceive(id){
+  const currentUser = localStorage.getItem("currentUser");
+  const key = "notify_" + currentUser;
+  let notifies = JSON.parse(localStorage.getItem(key)) || [];
+  const n = notifies.find(item => item.id === id);
+  if(n){
+    n.status = "已送达";
+    localStorage.setItem(key, JSON.stringify(notifies));
+    alert("已确认收货！");
+    renderNotify();
+  }
+}
+</script>
+</body>
+</html>

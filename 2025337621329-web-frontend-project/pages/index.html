@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寝室桶装水‑商品列表</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-wrap">
+            <h1>寝室桶装水订购系统</h1>
+            <div class="user-box">
+                <button id="userCircleBtn" class="circle-btn">登录</button>
+                <div id="userDropdown" class="dropdown-menu">
+                    <a href="./profile.html">个人中心</a>
+                    <button id="logoutBtn">登出</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav>
+        <div class="container">
+            <a href="./index.html">首页</a>
+            <a href="./create-order.html">订购</a>
+        </div>
+    </nav>
+    <main class="container">
+        <section class="search-section">
+            <form id="search-form" class="search-bar">
+                <input type="text" id="keyword" placeholder="请输入品牌/规格" autocomplete="off">
+                <button type="submit">搜索</button>
+            </form>
+        </section>
+        <h2>商品列表</h2>
+        <section id="product-wrap">
+            <article>
+                <h3>娃哈哈‑16.8L桶装水</h3>
+                <img src="../images/wahaha168.jpg" alt="娃哈哈16.8L饮用纯净水桶装水">
+                <p>单价：15.00元</p>
+                <p>规格：16.8L * 1桶</p>
+                <p>类型：循环桶（需空桶押金）</p>
+                <a class="btn btn--ghost" href="./detail-wahaha-168.html">查看商品详情</a>
+            </article>
+            <article>
+                <h3>农夫山泉‑19.0L桶装水（学生特惠）</h3>
+                <img src="../images/nongfu19stu.jpg" alt="农夫山泉19L桶装饮用天然水（学生特惠）">
+                <p>单价：17.00元</p>
+                <p>规格：19.0L * 1桶</p>
+                <p>类型：循环桶（需空桶押金）</p>
+                <a class="btn btn--ghost" href="./detail-nongfu-19stu.html">查看商品详情</a>
+            </article>
+            <article>
+                <h3>怡宝‑18.9L桶装水</h3>
+                <img src="../images/cestbon189.jpg" alt="怡宝18.9L饮用纯净水桶装水">
+                <p>单价：18.00元</p>
+                <p>规格：18.9L * 1桶</p>
+                <p>类型：循环桶（需空桶押金）</p>
+                <a class="btn btn--ghost" href="./detail-cestbon-189.html">查看商品详情</a>
+            </article>
+            <article>
+                <h3>怡宝‑12.8L一次性桶装水</h3>
+                <img src="../images/cestbon128.jpg" alt="怡宝12.8L一次性免押金桶装纯净水">
+                <p>单价：12.00元</p>
+                <p>规格：12.8L * 1桶</p>
+                <p>类型：一次性桶｜免押金</p>
+                <a class="btn btn--ghost" href="./detail-cestbon-128.html">查看商品详情</a>
+            </article>
+            <article>
+                <h3>农夫山泉‑19.0L一次性桶装水</h3>
+                <img src="../images/nongfu19once.jpg" alt="农夫山泉19L一次性无押金桶装天然水">
+                <p>单价：19.00元</p>
+                <p>规格：19.0L * 1桶</p>
+                <p>类型：一次性桶｜免押金</p>
+                <a class="btn btn--ghost" href="./detail-nongfu-19once.html">查看商品详情</a>
+            </article>
+            <article>
+                <h3>娃哈哈‑16.8L桶装水（多桶套餐）</h3>
+                <img src="../images/wahaha_package.jpg" alt="娃哈哈16.8L饮用纯净水桶装水">
+                <p>单价：14.00元/桶</p>
+                <p>规格：16.8L，3桶起购</p>
+                <p>类型：循环桶｜多购优惠</p>
+                <a class="btn btn--ghost" href="./detail-wahaha-package.html">查看商品详情</a>
+            </article>
+        </section>
+    </main>
+
+<!--登录注册弹窗 -->
+<div id="loginModal" class="modal-mask">
+  <div class="modal-box">
+    <div class="modal-tab">
+      <button class="tab-btn active" data-tab="login">登录</button>
+      <button class="tab-btn" data-tab="register">注册</button>
+    </div>
+    <div class="tab-content login-tab active">
+      <div>
+        <label>账号</label>
+        <input type="text" id="loginAccount" placeholder="输入账号">
+      </div>
+      <div>
+        <label>密码</label>
+        <input type="password" id="loginPwd" placeholder="输入密码">
+      </div>
+      <div class="modal-buttons">
+        <button id="loginSubmitBtn">登录</button>
+        <button id="closeModalBtn">关闭</button>
+      </div>
+    </div>
+    <div class="tab-content register-tab">
+      <div>
+        <label>设置账号</label>
+        <input type="text" id="regAccount" placeholder="自定义账号">
+      </div>
+      <div>
+        <label>设置密码</label>
+        <input type="password" id="regPwd" placeholder="自定义密码">
+      </div>
+      <div class="modal-buttons">
+        <button id="regSubmitBtn">注册</button>
+        <button id="closeModalBtn2">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <footer>
+        <p>寝室桶装水订购系统 ©2026</p>
+    </footer>
+
+<script>
+//搜索逻辑
+const searchForm = document.getElementById('search-form');
+const inputSearch = document.getElementById('keyword');
+const productWrap = document.getElementById('product-wrap');
+const articleList = productWrap.querySelectorAll('article');
+function doSearch() {
+    let keyword = inputSearch.value.trim().toLowerCase();
+    articleList.forEach(card => {
+        let textAll = card.textContent.toLowerCase();
+        card.style.display = textAll.includes(keyword) ? '' : 'none';
+    })
+}
+searchForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    doSearch();
+})
+
+//登录注册状态
+let userData = JSON.parse(localStorage.getItem("userList")) || [];
+let loginState = localStorage.getItem("isLogin");
+const circleBtn = document.getElementById("userCircleBtn");
+const dropdown = document.getElementById("userDropdown");
+const modalMask = document.getElementById("loginModal");
+const tabBtns = document.querySelectorAll(".tab-btn");
+const loginTab = document.querySelector(".login-tab");
+const regTab = document.querySelector(".register-tab");
+
+function initUserState(){
+  circleBtn.innerText = loginState === "true" ? "用户" : "登录";
+}
+initUserState();
+
+tabBtns.forEach(btn=>{
+  btn.onclick = ()=>{
+    tabBtns.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    if(tab === "login"){
+      loginTab.classList.add("active");regTab.classList.remove("active");
+    }else{
+      loginTab.classList.remove("active");regTab.classList.add("active");
+    }
+  }
+})
+
+circleBtn.onclick = function(){
+  if(loginState === "true"){
+    dropdown.classList.toggle("show");
+  }else{
+    modalMask.classList.add("show");
+    tabBtns[0].click();
+  }
+}
+document.querySelector("#closeModalBtn").onclick = ()=> modalMask.classList.remove("show");
+document.querySelector("#closeModalBtn2").onclick = ()=> modalMask.classList.remove("show");
+
+document.querySelector("#regSubmitBtn").onclick = function(){
+  const acc = document.getElementById("regAccount").value.trim();
+  const pwd = document.getElementById("regPwd").value.trim();
+  if(!acc||!pwd){alert("账号密码不能为空");return;}
+  if(userData.find(u=>u.account===acc)){alert("账号已存在！");return;}
+  userData.push({account:acc,password:pwd});
+  localStorage.setItem("userList",JSON.stringify(userData));
+  alert("注册成功！请登录");
+  tabBtns[0].click();
+}
+
+document.querySelector("#loginSubmitBtn").onclick = function(){
+  const acc = document.getElementById("loginAccount").value.trim();
+  const pwd = document.getElementById("loginPwd").value.trim();
+  const user = userData.find(u=>u.account===acc && u.password===pwd);
+  if(user){
+    alert("登录成功！");
+    localStorage.setItem("isLogin","true");
+    localStorage.setItem("currentUser", acc);
+    loginState="true";
+    circleBtn.innerText="用户";
+    modalMask.classList.remove("show");
+  }else{
+    alert("账号或密码错误");
+  }
+}
+
+document.getElementById("logoutBtn").onclick = function(){
+  localStorage.removeItem("isLogin");
+  localStorage.removeItem("currentUser");
+  loginState=null;
+  circleBtn.innerText="登录";
+  dropdown.classList.remove("show");
+}
+
+document.addEventListener("click",function(e){
+  if(!circleBtn.contains(e.target) && !dropdown.contains(e.target)){
+    dropdown.classList.remove("show");
+  }
+})
+</script>
+</body>
+</html>
